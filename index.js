@@ -26,7 +26,25 @@ if(e.target.id==="close-btn"){
 }
 })
 
+form.addEventListener('submit',(e) => {
+   console.log(e.target.dataset)
+   e.preventDefault()
+   const consentFormData = new FormData(form)
+   let recipeName = consentFormData.get("recipeName")
+   let coockingMethod = consentFormData.get("coockingMethod")
+   let coockingTime = consentFormData.get("coockingTime")
+   let imageUrl = consentFormData.get("imageUrl")
+   let rIngredients = []
+   if (document.querySelector('input[type="checkbox"]:checked')) {
+      let checkboxes = document.querySelectorAll('input[type=checkbox]:checked')
+      for (let i = 0; i < checkboxes.length; i++) {
+         rIngredients.push(ingredients.find(ingredient => checkboxes[i].value === ingredient.name))
 
+      }
+   }
+   let dish = new DishRecipe(recipeName, coockingMethod, coockingTime, imageUrl, rIngredients)
+   main.innerHTML += dish.render()
+})
 
  function renderRecepieForm(){
     
@@ -48,25 +66,7 @@ if(e.target.id==="close-btn"){
 
     
  }
- form.addEventListener('submit',(e) => {
-       console.log(e.target.dataset)
-       e.preventDefault()
-       const consentFormData = new FormData(form)
-       let recipeName = consentFormData.get("recipeName")
-       let coockingMethod = consentFormData.get("coockingMethod")
-       let coockingTime = consentFormData.get("coockingTime")
-       let imageUrl = consentFormData.get("imageUrl")
-       let rIngredients = []
-       if (document.querySelector('input[type="checkbox"]:checked')) {
-          let checkboxes = document.querySelectorAll('input[type=checkbox]:checked')
-          for (let i = 0; i < checkboxes.length; i++) {
-             rIngredients.push(ingredients.find(ingredient => checkboxes[i].value === ingredient.name))
 
-          }
-       }
-       let dish = new DishRecipe(recipeName, coockingMethod, coockingTime, imageUrl, rIngredients)
-       main.innerHTML += dish.render()
-    })
 
  function showIngerdients(){
     
