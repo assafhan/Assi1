@@ -5,9 +5,6 @@ class Ingredient{
         this.calories=calories
 
     }
-    toString=function(){
-        return  `${this.image}${this.calories}`
-    }
     render=function(){
         return `
         
@@ -17,6 +14,21 @@ class Ingredient{
         type="checkbox"
         value="${this.name}"
         >${this.name}
+    <div id="${this.name}}" >
+        <p>ingredient details:</p>
+        <img class="card-img" src="${this.image}" alt="${this.name}">
+        <span>${this.name}</span>
+        <span>Calories: ${this.calories}</span>
+    </div>
+</label>
+</div>`
+
+    }
+    //render speceific infredients inside recepeie
+    render1=function(){
+        return `
+        
+        <div class="card">
     <div id="${this.name}}" >
         <p>ingredient details:</p>
         <img class="card-img" src="${this.image}" alt="${this.name}">

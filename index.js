@@ -8,10 +8,10 @@ const form=document.getElementById('formd')
 const btns=document.getElementById('btns')
 const main=document.getElementById('main')
 const ingredients=[]
+let id=0//recepie id counter
 //all event listeners
 document.addEventListener("click",(e)=>{
 if(e.target.id==="get-ingredients"){
-    console.log(e.target)
 document.getElementById(e.target.value).classList.toggle('hidden')
 }
 if(e.target.id==="add-recepie-btn"){
@@ -34,7 +34,7 @@ if(e.target.id==="close-btn"){
 document.addEventListener('submit',(e) => {
    if(e.target.id==='form'){
    e.preventDefault()
-   addRecepie()
+   if(!addRecepie())return false
    
 }
 if(e.target.id==='form1'){
@@ -67,8 +67,14 @@ function addIngredient(){
     return true
 }
 function addRecepie(){
+    
     const consentFormData = new FormData(document.getElementById("form"))
+   
    let recipeName = consentFormData.get("recipeName")
+   if(!recipeName){
+    alert("Recepie must have name")
+    return false
+   }
    let coockingMethod = consentFormData.get("coockingMethod")
    let coockingTime = consentFormData.get("coockingTime")
    let imageUrl = consentFormData.get("imageUrl")
@@ -80,8 +86,9 @@ function addRecepie(){
 
       }
    }
-   let dish = new DishRecipe(recipeName, coockingMethod, coockingTime, imageUrl, rIngredients)
+   let dish = new DishRecipe(recipeName, coockingMethod, coockingTime, imageUrl, rIngredients,id)
    main.innerHTML += dish.render()
+   id++
 }
 function renderIngredientForm(){
     
@@ -148,6 +155,7 @@ function renderIngredientForm(){
     return ingredientsHtml
    
  }
+ //get all the ingredients from local storge
  function allStorage(){
     let values=[]
     let keys=Object.keys(localStorage)
