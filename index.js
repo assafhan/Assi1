@@ -1,15 +1,18 @@
 import ingredientData from './data.js'
 import Ingredient from './Ingredient.js'
 import DishRecipe from './DishRecipe.js'
+//clear localstorage
+localStorage.clear()
 //all required varibles
-const form=document.getElementById('form')
+const form=document.getElementById('formd')
 const btns=document.getElementById('btns')
 const main=document.getElementById('main')
 const ingredients=[]
 //all event listeners
 document.addEventListener("click",(e)=>{
 if(e.target.id==="get-ingredients"){
-   e.target.querySelector('div').classList.toggle('hidden')
+    console.log(e.target)
+document.getElementById(e.target.value).classList.toggle('hidden')
 }
 if(e.target.id==="add-recepie-btn"){
    renderRecepieForm()
@@ -18,6 +21,8 @@ if(e.target.id==="add-recepie-btn"){
 }
 if(e.target.id==="add-ingredient-btn"){
    btns.classList.toggle('hidden')
+   renderIngredientForm()
+   form.style.display = 'flex'
 }
 if(e.target.id==="close-btn"){
    e.preventDefault() 
@@ -26,10 +31,43 @@ if(e.target.id==="close-btn"){
 }
 })
 
-form.addEventListener('submit',(e) => {
-   console.log(e.target.dataset)
+document.addEventListener('submit',(e) => {
+   if(e.target.id==='form'){
    e.preventDefault()
-   const consentFormData = new FormData(form)
+   addRecepie()
+   
+}
+if(e.target.id==='form1'){
+    e.preventDefault()
+    if(!addIngredient())return false
+    renderIngredientForm()
+}
+})
+
+
+
+
+function addIngredient(){
+    let ingredient
+    
+    const consentFormData = new FormData(document.getElementById("form1"))
+    let ingredientName = consentFormData.get("ingredientName")
+    if(!ingredientName){
+        alert("Ingredient name cant set to null")
+        return false
+    }
+    let calories = consentFormData.get("calories")
+    if(!calories){
+        alert("Calories must be set to number")
+        return false
+    }
+   let imageUrl = consentFormData.get("imageUrl")
+   ingredient=new Ingredient(ingredientName,imageUrl,calories)
+    localStorage.setItem(ingredient.name,JSON.stringify(ingredient))
+    return true
+}
+function addRecepie(){
+    const consentFormData = new FormData(document.getElementById("form"))
    let recipeName = consentFormData.get("recipeName")
    let coockingMethod = consentFormData.get("coockingMethod")
    let coockingTime = consentFormData.get("coockingTime")
@@ -44,12 +82,30 @@ form.addEventListener('submit',(e) => {
    }
    let dish = new DishRecipe(recipeName, coockingMethod, coockingTime, imageUrl, rIngredients)
    main.innerHTML += dish.render()
-})
+}
+function renderIngredientForm(){
+    
+    form.innerHTML=`
+    <form id="form1" class="form">
+    <input type="text" name="ingredientName" placeholder="ingredient name :"/>
+    <input type="number" name="calories" placeholder="Calories:"/>
+    <input type="text" name="imageUrl" placeholder="imageUrl:"/>
+    <div id="place">
+    ${showIngerdients()}
+    </div>
+    <div id="form-choise-btns">
+    <button type="submit" class="btns">Submit</button>
+    
+    <button id="close-btn"  class="btns">Close</button>
+</div></form>
+    `
 
+    
+ }
  function renderRecepieForm(){
     
     form.innerHTML=`
-    <form id="form">
+    <form id="form" class="form">
     <input type="text" name="recipeName" placeholder="Recipe name:"/>
     <input type="text" name="coockingMethod" placeholder="Recipe coocking method:"/>
     <input type="text" name="coockingTime" placeholder="Recipe coocking time:"/>
@@ -59,9 +115,9 @@ form.addEventListener('submit',(e) => {
     </div>
     <div id="form-choise-btns">
     <button type="submit" class="btns">Submit</button>
-    </form>
+    
     <button id="close-btn"  class="btns">Close</button>
-</div>
+</div></form>
     `
 
     
@@ -71,12 +127,33 @@ form.addEventListener('submit',(e) => {
  function showIngerdients(){
     
     let ingredientsHtml=``
+    let ingredient
+    let lsData=allStorage()
+    
     ingredientData.map(part=>{
-        let ingredient=new Ingredient(part.name,part.image,part.calories)
+         ingredient=new Ingredient(part.name,part.image,part.calories)
         ingredients.push(ingredient)
+        if(!localStorage.getItem(part.name)){
         localStorage.setItem(ingredient.name,JSON.stringify(ingredient))
-      ingredientsHtml+=ingredient.render()
+        ingredientsHtml+=ingredient.render()
+    }
+    
+    
     })
+        lsData.map(part=>{
+            
+        ingredient=new Ingredient(part.name,part.image,part.calories)
+        ingredientsHtml+=ingredient.render()
+        })
     return ingredientsHtml
    
+ }
+ function allStorage(){
+    let values=[]
+    let keys=Object.keys(localStorage)
+    let   i=keys.length
+    while(i--){
+        values.push(JSON.parse(localStorage.getItem(keys[i])))
+    }
+    return values;
  }

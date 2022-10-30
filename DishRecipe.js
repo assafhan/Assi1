@@ -14,16 +14,16 @@ render =function(){
     return `
         <div class="card">
         <div id="${this.name}" >
-        <p>Recipe name:${this.name} </p>
+        <h3>Recipe name:${this.name} </h3>
         <img src="${this.imageUrl}" alt="${this.name}">
         <span>Total calories: </span>
-        <span>${this.name} ${this.totalCalories()}</span>
-        <button class="btns"id="get-ingredients" >Ingredients
-        <div class="popupmodal hidden">
-        <h1>ingredients details:</h1>
+        <span> ${this.totalCalories()}</span>
+        <button class="btns"id="get-ingredients" value="${this.name + this.imageUrl}" >Ingredients
+        </button>
+        <div class="popupmodal hidden" id="${this.name + this.imageUrl}">
+        <h4>ingredients details:</h4>
         ${this.getIngredients()}
         </div>
-        </button>
         </div>
         </div>`
         
